@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lee Slater</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Notes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+/* Reader. Substack proportions: 680px column, 20px serif, generous leading. */
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f7f7f5;
+  --ink: #1a1a1a;
+  --ink-soft: #57534e;
+  --ink-faint: #8a8580;
+  --rule: #e5e3df;
+  --accent: #b4412a;
+  --sel: #fdf0d5;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 6px 20px rgba(0, 0, 0, 0.05);
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16161a;
+    --bg-soft: #1e1e23;
+    --ink: #e8e6e3;
+    --ink-soft: #b0aca6;
+    --ink-faint: #7c7872;
+    --rule: #2e2e35;
+    --accent: #e08a6d;
+    --sel: #3a3220;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.35);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #16161a;
+  --bg-soft: #1e1e23;
+  --ink: #e8e6e3;
+  --ink-soft: #b0aca6;
+  --ink-faint: #7c7872;
+  --rule: #2e2e35;
+  --accent: #e08a6d;
+  --sel: #3a3220;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+::selection { background: var(--sel); }
+
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 22px 6rem;
+}
+
+/* ---- masthead ---- */
+
+.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: saturate(180%) blur(8px);
+}
+
+.masthead-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 13px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mark {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mark .glyph {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
+  flex: none;
+}
+
+.masthead .spacer { flex: 1; }
+
+.iconbtn {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.iconbtn:hover { color: var(--ink); border-color: var(--ink-faint); }
+
+/* ---- post ---- */
+
+article { padding-top: 3rem; }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 1rem;
+}
+
+h1.title {
+  font-family: var(--sans);
+  font-size: 41px;
+  line-height: 1.13;
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  margin: 0 0 0.55rem;
+}
+
+p.subtitle {
+  font-family: var(--sans);
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 400;
+  color: var(--ink-soft);
+  margin: 0 0 1.7rem;
+}
+
+.byline {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-bottom: 1.6rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.4rem;
+}
+
+.byline .avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex: none;
+}
+
+.byline .who { font-weight: 600; color: var(--ink); }
+.byline .dot { color: var(--ink-faint); }
+
+.prose > *:first-child { margin-top: 0; }
+
+.prose p { margin: 0 0 1.45rem; }
+
+.prose h2 {
+  font-family: var(--sans);
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  margin: 3rem 0 1.1rem;
+}
+
+.prose h3 {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 2.2rem 0 0.8rem;
+}
+
+.prose strong { font-weight: 700; }
+
+.prose em { font-style: italic; }
+
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+.prose blockquote {
+  margin: 2rem 0;
+  padding: 0.2rem 0 0.2rem 1.4rem;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.prose blockquote p:last-child { margin-bottom: 0; }
+
+.prose ul, .prose ol { margin: 0 0 1.45rem; padding-left: 1.45rem; }
+.prose li { margin-bottom: 0.55rem; }
+.prose li::marker { color: var(--ink-faint); }
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 3rem auto;
+  width: 42%;
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.83em;
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.prose pre {
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 15px;
+  margin: 0 0 1.6rem;
+}
+
+.prose th, .prose td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.prose th { font-weight: 600; color: var(--ink-soft); }
+
+.tablewrap { overflow-x: auto; }
+
+.endmark {
+  margin: 3.4rem 0 0;
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-faint);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pill {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-soft);
+  background: var(--bg-soft);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+/* ---- index ---- */
+
+.lede {
+  padding: 3.2rem 0 2rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.6rem;
+}
+
+.lede h1 {
+  font-family: var(--sans);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.4rem;
+}
+
+.lede p {
+  font-family: var(--sans);
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.card {
+  display: block;
+  padding: 1.9rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.card:hover h2 { color: var(--accent); }
+
+.card .meta {
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-faint);
+  margin: 0 0 0.5rem;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card h2 {
+  font-family: var(--sans);
+  font-size: 24px;
+  line-height: 1.22;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.4rem;
+  transition: color 0.12s;
+}
+
+.card p {
+  font-size: 17px;
+  color: var(--ink-soft);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.empty {
+  padding: 4rem 0;
+  text-align: center;
+  color: var(--ink-faint);
+  font-family: var(--sans);
+  font-size: 15px;
+}
+
+/* ---- lock ---- */
+
+.lock {
+  min-height: 82vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 22px;
+}
+
+.lock form {
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+
+.lock .glyph {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0 auto 1.3rem;
+}
+
+.lock h1 {
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+}
+
+.lock p {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 1.5rem;
+}
+
+.lock input {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 9px;
+  background: var(--bg-soft);
+  color: var(--ink);
+  margin-bottom: 0.7rem;
+}
+
+.lock input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.lock button {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 11px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.lock .err {
+  color: var(--accent);
+  font-size: 13px;
+  min-height: 1.2em;
+  margin: 0.7rem 0 0;
+  font-family: var(--sans);
+}
+
+.lock label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 0.9rem;
+}
+
+/* ---- reading progress ---- */
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--accent);
+  width: 0;
+  z-index: 40;
+  transition: width 0.1s linear;
+}
+
+@media (max-width: 600px) {
+  body { font-size: 19px; }
+  h1.title { font-size: 32px; }
+  p.subtitle { font-size: 19px; }
+  .prose h2 { font-size: 23px; }
+  .lede h1 { font-size: 28px; }
+  .card h2 { font-size: 21px; }
+}
+
+@media print {
+  .masthead, .endmark, .progress { display: none; }
+  body { font-size: 11pt; color: #000; background: #fff; }
+}
+
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="masthead" id="masthead">
+  <div class="masthead-inner">
+    <a class="mark" href="#/"><span class="glyph">L</span>Lee Slater</a>
+    <span class="spacer"></span>
+    <button class="iconbtn" id="backbtn" type="button" hidden>All posts</button>
+    <button class="iconbtn" id="themebtn" type="button">Theme</button>
+  </div>
+</header>
+
+<main id="view"></main>
+
+<script>
+(function () {
+  'use strict';
+
+  var KEY_THEME = 'reader-theme';
+  var KEY_PASS = 'reader-pass';
+  var KEY_READ = 'reader-read';
+
+  var root = document.documentElement;
+  var view = document.getElementById('view');
+  var backbtn = document.getElementById('backbtn');
+  var bar = document.getElementById('progress');
+
+  var posts = null;      // resolved list, newest first
+  var payload = null;    // raw payload.json
+
+  /* ---------- theme ---------- */
+
+  try {
+    var t = localStorage.getItem(KEY_THEME);
+    if (t) root.setAttribute('data-theme', t);
+  } catch (e) {}
+
+  document.getElementById('themebtn').addEventListener('click', function () {
+    var now = root.getAttribute('data-theme');
+    if (!now) now = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var next = now === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY_THEME, next); } catch (e) {}
+  });
+
+  /* ---------- reading progress ---------- */
+
+  function tick() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+  addEventListener('scroll', tick, { passive: true });
+  addEventListener('resize', tick);
+
+  /* ---------- read state ---------- */
+
+  function readSet() {
+    try { return new Set(JSON.parse(localStorage.getItem(KEY_READ) || '[]')); }
+    catch (e) { return new Set(); }
+  }
+  function markRead(slug) {
+    var s = readSet();
+    s.add(slug);
+    try { localStorage.setItem(KEY_READ, JSON.stringify(Array.from(s))); } catch (e) {}
+  }
+
+  /* ---------- crypto ---------- */
+
+  function b64(s) {
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  function derive(pass, salt, iterations, hash) {
+    return crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey'])
+      .then(function (base) {
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt: salt, iterations: iterations, hash: hash },
+          base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+        );
+      });
+  }
+
+  function decrypt(pass) {
+    var k = payload.kdf;
+    return derive(pass, b64(k.salt), k.iterations, k.hash).then(function (key) {
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(payload.iv) }, key, b64(payload.ct));
+    }).then(function (buf) {
+      return JSON.parse(new TextDecoder().decode(buf));
+    });
+  }
+
+  /* ---------- views ---------- */
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function lockScreen(message) {
+    backbtn.hidden = true;
+    view.innerHTML =
+      '<div class="lock"><form id="lockform">' +
+      '<div class="glyph">L</div>' +
+      '<h1>Lee Slater</h1>' +
+      '<p>Private. Enter the passphrase to read.</p>' +
+      '<input id="pass" type="password" autocomplete="current-password" placeholder="Passphrase" autofocus>' +
+      '<button type="submit">Unlock</button>' +
+      '<label><input type="checkbox" id="remember" checked> Stay unlocked on this device</label>' +
+      '<p class="err">' + esc(message || '') + '</p>' +
+      '</form></div>';
+
+    document.getElementById('lockform').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var pass = document.getElementById('pass').value;
+      var remember = document.getElementById('remember').checked;
+      decrypt(pass).then(function (list) {
+        if (remember) { try { localStorage.setItem(KEY_PASS, pass); } catch (e) {} }
+        install(list);
+        route();
+      }).catch(function () {
+        lockScreen('That is not the passphrase.');
+      });
+    });
+  }
+
+  function install(privateList) {
+    posts = (payload.public || []).concat(privateList || []);
+    posts.sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : 0; });
+  }
+
+  function indexView() {
+    backbtn.hidden = true;
+    var read = readSet();
+    var html =
+      '<div class="wrap">' +
+      '<div class="lede"><h1>Lee Slater</h1><p>Notes, essays and working papers. Written to be reread.</p></div>';
+
+    if (!posts.length) {
+      html += '<div class="empty">Nothing written yet.</div>';
+    } else {
+      posts.forEach(function (p) {
+        html +=
+          '<a class="card" href="#/' + esc(p.slug) + '">' +
+          '<p class="meta">' + esc(p.dateLong) +
+          '<span>·</span>' + p.readtime + ' min' +
+          (read.has(p.slug) ? '<span>·</span>read' : '') +
+          (p.private ? '<span>·</span>private' : '') +
+          '</p>' +
+          '<h2>' + esc(p.title) + '</h2>' +
+          (p.subtitle ? '<p>' + esc(p.subtitle) + '</p>' : '') +
+          '</a>';
+      });
+    }
+    html += '</div>';
+    view.innerHTML = html;
+    scrollTo(0, 0);
+    tick();
+  }
+
+  function postView(slug) {
+    var p = null;
+    for (var i = 0; i < posts.length; i++) if (posts[i].slug === slug) p = posts[i];
+    if (!p) { location.hash = '#/'; return; }
+
+    backbtn.hidden = false;
+    var tags = (p.tags || []).map(function (t) { return '<span class="pill">' + esc(t) + '</span>'; }).join('');
+
+    view.innerHTML =
+      '<div class="wrap"><article>' +
+      (p.eyebrow ? '<p class="eyebrow">' + esc(p.eyebrow) + '</p>' : '') +
+      '<h1 class="title">' + esc(p.title) + '</h1>' +
+      (p.subtitle ? '<p class="subtitle">' + esc(p.subtitle) + '</p>' : '') +
+      '<div class="byline"><span class="avatar">LS</span><span>' +
+      '<span class="who">Lee Slater</span><br>' +
+      '<span>' + esc(p.dateLong) + '<span class="dot"> · </span>' + p.readtime + ' min read</span>' +
+      '</span></div>' +
+      '<div class="prose">' + p.html + '</div>' +
+      '<div class="endmark">' + tags + p.words + ' words</div>' +
+      '</article></div>';
+
+    markRead(slug);
+    scrollTo(0, 0);
+    tick();
+  }
+
+  function route() {
+    if (!posts) return;
+    var h = location.hash.replace(/^#\/?/, '');
+    if (h) postView(h); else indexView();
+  }
+
+  backbtn.addEventListener('click', function () { location.hash = '#/'; });
+  addEventListener('hashchange', route);
+
+  /* ---------- boot ---------- */
+
+  fetch('payload.json', { cache: 'no-cache' })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      payload = data;
+      if (!payload.encrypted) { install([]); route(); return; }
+      var saved = null;
+      try { saved = localStorage.getItem(KEY_PASS); } catch (e) {}
+      if (saved) {
+        decrypt(saved).then(function (list) { install(list); route(); })
+                      .catch(function () { lockScreen(''); });
+      } else {
+        lockScreen('');
+      }
+    })
+    .catch(function () {
+      view.innerHTML = '<div class="wrap"><div class="empty">Could not load the posts.</div></div>';
+    });
+
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', function () { navigator.serviceWorker.register('sw.js'); });
+  }
+})();
+</script>
+</body>
+</html>
