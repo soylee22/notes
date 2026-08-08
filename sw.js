@@ -1,5 +1,5 @@
 // Reader service worker. Shell cache-first, payload network-first.
-const CACHE = 'reader-20260808105801';
+const CACHE = 'reader-20260808214432';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
                './icon-180.png', './icon-192.png', './icon-512.png'];
 
